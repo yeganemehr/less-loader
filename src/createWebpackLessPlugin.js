@@ -33,7 +33,12 @@ function createWebpackLessPlugin(loaderContext) {
     }
 
     loadFile(filename, currentDirectory /* , options, environment */) { // eslint-disable-line class-methods-use-this
-      const url = filename.replace(matchMalformedModuleFilename, '$1');
+      let url = filename;
+      if (url.substr(0, 13) === 'node_modules/') {
+        url = `~${url.substr(13)}`;
+      }
+
+      url = filename.replace(matchMalformedModuleFilename, '$1');
       const moduleRequest = loaderUtils.urlToRequest(url, url.charAt(0) === '/' ? '' : null);
       // Less is giving us trailing slashes, but the context should have no trailing slash
       const context = currentDirectory.replace(trailingSlash, '');
